@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: atlas-knowledge-studio
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: DEMO_MODE
+        value: '1'
+      - key: ADMIN_TOKEN
+        generateValue: true
