@@ -1,0 +1,9 @@
+Security and evidence handling
+
+Private uploaded documents are visible only to requests bearing the configured owner token. Public visitors can retrieve the built-in sample documents. The frontend keeps the owner token in memory instead of local storage. Server secrets are supplied as environment variables and are never returned to the browser. Document snippets are inserted as text, avoiding HTML execution from uploaded content or model responses.
+
+Ingestion and document deletion require the owner token. When a live LLM key is configured, non-demo generation also requires the token to reduce exposure to unwanted inference costs. A basic process-local IP rate limit guards API requests. This is not a distributed abuse protection system, and deployments behind a proxy need platform-level controls.
+
+Web ingestion permits public HTTPS destinations on port 443, rejects private or local DNS results, caps response size, and disables redirects. DNS checks alone cannot fully prevent DNS rebinding; an outbound firewall or hardened fetching service is needed for hostile-input production deployments. PDF processing is capped by file size, page count, and extracted character count, but untrusted PDFs should be parsed in an isolated resource-limited worker in production.
+
+The generation prompt treats retrieved documents as untrusted evidence and asks the model to ignore instructions embedded inside them. This reduces but cannot eliminate prompt injection. An answer citation points to retrieved evidence; it does not prove that the evidence entails the claim. Users should inspect the source, particularly for important decisions. Atlas declines to answer when retrieval yields no qualifying evidence.

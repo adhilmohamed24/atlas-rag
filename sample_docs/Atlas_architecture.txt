@@ -1,0 +1,9 @@
+Atlas architecture and retrieval pipeline
+
+Atlas is a retrieval augmented generation document chatbot. It accepts text-based PDFs, public HTTPS web pages, and Notion pages shared with a configured integration. PDF extraction preserves page numbers. Notion extraction follows paginated block children and nested blocks, including table row text.
+
+The ingestion pipeline extracts text, splits it into overlapping chunks of approximately 1,400 characters with 200 characters of overlap, computes BGE small English embeddings locally using FastEmbed, and writes vectors plus source metadata to Qdrant. The default semantic embedding has 384 dimensions. Stable document and chunk IDs make repeated ingestion of identical content idempotent.
+
+At query time, Atlas embeds the question, searches Qdrant using cosine similarity, filters by selected documents and visibility, and retrieves up to five chunks scoring above 0.25. This threshold is a starting configuration, not a calibrated guarantee of relevance. Source records are sent to the browser before generation starts. An OpenAI-compatible chat endpoint receives only the question and retrieved excerpts and streams its answer over server-sent events. Numeric citations open the original excerpt, page number, and similarity score.
+
+Without an LLM key, Atlas shows labeled retrieved excerpts. DEMO_MODE=1 additionally uses a deterministic hashed word vector for offline testing; it is not semantic embedding or LLM generation. Production semantic mode uses FastEmbed. Each question is independent; the interface retains the visible transcript but does not send conversation history to the model.

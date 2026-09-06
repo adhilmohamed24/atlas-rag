@@ -1,0 +1,9 @@
+Deployment and engineering tradeoffs
+
+Atlas uses one FastAPI process that serves the web interface and API. A Docker Space on Hugging Face can host both on port 7860. A single process avoids local Qdrant storage lock conflicts and keeps the deployment small. FastEmbed runs on CPU and downloads its model on first semantic startup. Model startup and ingestion can take time on small machines.
+
+Local Qdrant storage persists only as long as its underlying disk persists. Space rebuilds and ephemeral storage can lose indexed documents. Configure remote Qdrant for durable storage. Remote Qdrant free-tier capacity and availability must be checked before deployment. The application does not require a paid LLM subscription; a compatible provider can be configured, but free inference availability and usage limits vary by provider.
+
+The current application is a single-owner portfolio deployment. Ingestion runs in a bounded in-process critical section rather than a durable background queue. A stopped process can interrupt ingestion. There are no automatic Notion syncs, OCR, document version management, reranking, billing, multi-user tenancy, or production SLA. A public read-only sample corpus is safe to explore, while the owner token gates private source changes and paid chat.
+
+Future scale work includes a durable job queue, per-user authentication, per-tenant vector filters, distributed rate limiting, object storage, upload scanning, network egress restrictions, structured tracing, and a larger labeled retrieval and answer-quality evaluation dataset. Production readiness should be demonstrated with measurements rather than asserted from a feature list.
