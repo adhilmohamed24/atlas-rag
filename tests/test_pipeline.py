@@ -90,3 +90,16 @@ def test_live_generation_stream_contract(tmp_path, monkeypatch):
         assert public.status_code == 200
         assert "Evidence-backed answer [1]." in public.text
         assert client.post("/api/chat", json={"question":"another question"}).status_code == 429
+
+
+def test_web_ingestion_parses_streamed_bytes(monkeypatch):
+    import httpx
+    import app.ingest as ingest
+    real_client = httpx.Client
+    html = b"<html><title>Web fixture</title><main><p>Retention is 37 days.</p><script>hidden()</script></main></html>"
+    transport = httpx.MockTransport(lambda request: httpx.Response(200, headers={"content-type": "text/html"}, content=html))
+    monkeypatch.setattr(ingest, "validate_url", lambda url: url)
+    monkeypatch.setattr(ingest.httpx, "Client", lambda **kwargs: real_client(transport=transport, **kwargs))
+    title, pages = ingest.web_document("https://example.com")
+    assert title == "Web fixture"
+    assert pages == [(None, "Retention is 37 days.")]
