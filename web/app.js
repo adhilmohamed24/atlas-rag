@@ -30,6 +30,7 @@ function showEvidence(source) {
   const valid = /^https:\/\//i.test(source.url || ''); $('evidence-url').classList.toggle('hidden',!valid); $('evidence-url').href=valid?source.url:'#';
 }
 function renderAnswer(element, text, sources) {
+  text = text.replace(/【(\d+)】/g, '[$1]');
   element.replaceChildren(); const parts=text.split(/(\[\d+\])/g);
   for(const part of parts){ const match=/^\[(\d+)\]$/.exec(part); const source=match&&sources.find(s=>s.citation===Number(match[1])); if(source){const b=document.createElement('button');b.className='citation';b.textContent=part;b.title=source.title;b.onclick=()=>showEvidence(source);element.append(b);}else element.append(document.createTextNode(part)); }
 }
