@@ -52,7 +52,7 @@ def web_document(url):
                 content.extend(part)
                 if len(content) > MAX_BYTES:
                     raise ValueError("Page exceeds the 10 MB limit.")
-    soup = BeautifulSoup(content, "html.parser")
+    soup = BeautifulSoup(bytes(content), "html.parser")
     title = soup.title.get_text(strip=True) if soup.title else url
     for tag in soup(["script", "style", "nav", "footer", "header", "noscript"]):
         tag.decompose()
