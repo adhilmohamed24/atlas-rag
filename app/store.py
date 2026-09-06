@@ -19,6 +19,10 @@ class Store:
         self.collection = "atlas_demo_v1" if demo else "atlas_" + hashlib.sha256(os.getenv("EMBEDDING_MODEL", "BAAI/bge-small-en-v1.5").encode()).hexdigest()[:12]
         if not self.client.collection_exists(self.collection):
             self.client.create_collection(self.collection, vectors_config=models.VectorParams(size=self.dimension, distance=models.Distance.COSINE))
+        if os.getenv("QDRANT_URL") and path is None:
+            # Cloud strict mode requires indexes for filtered vector queries.
+            self.client.create_payload_index(self.collection, field_name="public", field_schema=models.PayloadSchemaType.BOOL, wait=True)
+            self.client.create_payload_index(self.collection, field_name="doc_id", field_schema=models.PayloadSchemaType.KEYWORD, wait=True)
 
     def embed(self, texts, query=False):
         if self.demo:
