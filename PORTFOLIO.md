@@ -8,9 +8,9 @@
 
 **Engineering decisions.** Local embeddings avoid a per-request embedding API dependency. One container serves UI and API to simplify deployment. Stable content IDs make identical uploads idempotent. Owner-only ingestion and visibility filtering keep private uploads separate from public sample data. Streaming makes progress visible; empty retrieval produces an explicit insufficient-evidence answer. Source text is rendered without HTML interpretation.
 
-**Tradeoffs.** This is a single-owner MVP with production-oriented controls. A production deployment still needs durable ingestion jobs, isolated PDF parsing, hardened network egress, stronger identity and abuse controls, durable storage, and broader quality evaluation. Citations enable inspection; they do not establish correctness by themselves.
+**Tradeoffs.** This is a single-owner MVP with production-oriented controls. A production deployment still needs durable ingestion jobs, isolated PDF parsing, hardened network egress, stronger identity and abuse controls, automated backups, and broader quality evaluation. Citations enable inspection; they do not establish correctness by themselves.
 
-## LinkedIn draft — publish after live deployment verification
+## LinkedIn draft
 
 I built Atlas, a RAG document chatbot that connects PDFs, websites, and Notion pages to searchable evidence.
 
@@ -22,8 +22,10 @@ I also implemented source filtering, idempotent ingestion, private document acce
 
 Tech: Python, FastAPI, Qdrant, FastEmbed, Docker, JavaScript, and an OpenAI-compatible LLM endpoint.
 
-Live app: [insert verified public URL]
-Source: [insert repository URL]
+Live app: https://atlas-rag-kjkq.onrender.com
+Source: https://github.com/adhilmohamed24/atlas-rag
+
+The free hosting plan sleeps when idle, so the first visit can take a minute or more. Public demo answers use a shared daily quota; uploading documents requires owner access.
 
 #AI #RAG #Python #MachineLearning #BuildInPublic
 
@@ -33,4 +35,4 @@ Source: [insert repository URL]
 - Implemented FastAPI streaming responses with inline citations and an evidence viewer, plus access controls and idempotent document indexing.
 - Added automated integration checks for retrieval visibility, authorization, ingestion boundaries, and streaming behavior; packaged the app for Docker deployment.
 
-Only add deployment claims and measured performance numbers after verifying them. Do not describe the offline demo as semantic retrieval or LLM generation. Be ready to explain every stage, tradeoff, and test; this implementation was built with AI assistance.
+The public deployment uses Render, Qdrant Cloud, and Groq. Be ready to explain every stage, tradeoff, and test; this implementation was built with AI assistance. Notion ingestion requires a configured integration and shared page; live Notion verification is pending.

@@ -6,6 +6,18 @@ services:
     healthCheckPath: /api/health
     envVars:
       - key: DEMO_MODE
-        value: '1'
+        value: '0'
       - key: ADMIN_TOKEN
         generateValue: true
+      - key: LLM_BASE_URL
+        value: https://api.groq.com/openai/v1
+      - key: LLM_MODEL
+        value: openai/gpt-oss-20b
+      - key: LLM_API_KEY
+        sync: false
+      - key: PUBLIC_LLM_DAILY_LIMIT
+        value: '20'
+      - key: QDRANT_URL
+        sync: false
+      - key: QDRANT_API_KEY
+        sync: false

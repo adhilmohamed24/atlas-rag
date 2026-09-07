@@ -10,6 +10,10 @@ pinned: false
 
 # Atlas — answers with evidence
 
+[Open the live app](https://atlas-rag-kjkq.onrender.com) · [Source repository](https://github.com/adhilmohamed24/atlas-rag) · [CI checks](https://github.com/adhilmohamed24/atlas-rag/actions)
+
+The live deployment uses FastEmbed semantic retrieval, Qdrant Cloud storage, and Groq `openai/gpt-oss-20b`. Uploaded PDF retrieval was verified across a Render redeployment. Public sample-corpus answers have a shared daily quota. Owner access unlocks uploads. Render Free sleeps when idle, so the first load can take a minute or more.
+
 A single-owner RAG workspace for PDFs, web pages, and Notion. FastAPI serves an accessible responsive interface, Qdrant stores vectors, local FastEmbed embeddings retrieve evidence, and an OpenAI-compatible endpoint streams cited answers. Click a citation to inspect the exact retrieved chunk and PDF page.
 
 ## Run locally
@@ -69,6 +73,8 @@ Official references: [Hugging Face Docker Spaces](https://huggingface.co/docs/hu
 
 ## Free hosting alternative
 
-The included `render.yaml` deploys the offline demo on a Render Free web service from a Git repository. Render documents free instances with 512 MB RAM and idle sleep after 15 minutes, so cold starts are expected. The full local embedding model may exceed that memory budget: semantic mode on this tier requires measurement before promising reliability. Use durable remote Qdrant for real documents. [Render free service limits](https://render.com/docs/free).
+The included `render.yaml` deploys semantic mode on a Render Free web service and prompts for your Groq and Qdrant credentials. Render documents free instances with 512 MB RAM and idle sleep after 15 minutes, so cold starts are expected. The deployed sample workload starts and answers within that memory tier; large or concurrent ingestion workloads still need measurement. Use durable remote Qdrant for real documents. [Render free service limits](https://render.com/docs/free).
 
 Groq offers an OpenAI-compatible endpoint at `https://api.groq.com/openai/v1` and a rate-limited free tier. Set `LLM_API_KEY` to your Groq key and `LLM_MODEL` to a currently supported model from your console. Do not put keys into client code. [Groq API](https://console.groq.com/docs/api-reference), [free plan limits](https://console.groq.com/docs/rate-limits).
+
+Keep original documents and take Qdrant snapshots: remote storage is not a backup. Free-tier inactivity and retention rules can change; check [Qdrant Cloud cluster guidance](https://qdrant.tech/documentation/cloud/create-cluster/).
