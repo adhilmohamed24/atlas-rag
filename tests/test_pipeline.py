@@ -90,6 +90,12 @@ def test_live_generation_stream_contract(tmp_path, monkeypatch):
         assert public.status_code == 200
         assert "Evidence-backed answer [1]." in public.text
         assert client.post("/api/chat", json={"question":"another question"}).status_code == 429
+        async def empty_stream(self):
+            yield 'data: [DONE]'
+        monkeypatch.setattr(ProviderResponse, "aiter_lines", empty_stream)
+        empty = client.post("/api/chat", headers={"Authorization":"Bearer test-owner"}, json={"question":"How does Atlas retrieve and cite evidence?"})
+        assert "event: error" in empty.text
+        assert "event: done" not in empty.text
 
 
 def test_web_ingestion_parses_streamed_bytes(monkeypatch):
